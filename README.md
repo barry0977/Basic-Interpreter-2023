@@ -127,7 +127,19 @@ BASIC 是一门**解释性**编程语言，本次大作业要求你用 C++ 实�
 
 **标程：**
 
-`Basic-Demo-64bit` 这是使用已有的正确代码编译出的一个可执行文件。你可以用命令行输入`./Basic-Demo-64bit`来运行它，看看BASIC解释器是如何工作的。
+如果你用的是wsl或linux，请删除`Basic-Demo-64bit_for_mac_to_be_rename`。
+
+如果你用的是mac，请删除`Basic-Demo-64bit`，并将`Basic-Demo-64bit_for_mac_to_be_rename`改名为`Basic-Demo-64bit`。
+
+之后的步骤中我们认为你完成了此操作。
+
+`Basic-Demo-64bit`是标程的可执行文件，你可以用命令行输入`./Basic-Demo-64bit`来运行它，看看BASIC解释器是如何工作的。
+
+【注：
+
+如果你用的不是wsl，而是mac或linux，在运行`./Basic-Demo-64bit`的时候，可能会出现 Permission denied 错误。这时候运行`chmod +x Basic-Demo-64bit`应当可以解决此问题。
+
+如果你在wsl下运行`./Basic-Demo-64bit`的时候出现 Permission denied 错误，可以先运行`chmod a+rwx Basic-Demo-64bit`来修改权限。
 
 
 **评测脚本使用方法：**
@@ -204,7 +216,7 @@ END Hahaha  --> an invalid END command
 
 2.  `Basic/exp.hpp` 对表达式进行求值。
 
-3.  `Basic/exp.hpp` 存储程序运行过程的变量与值。】
+3.  `Basic/evalstate.hpp` 存储程序运行过程的变量与值。】
 
 ## 2.5 关于 OJ 评测
 
