@@ -139,8 +139,7 @@ BASIC 是一门**解释性**编程语言，本次大作业要求你用 C++ 实�
 
 如果你用的不是wsl，而是mac或linux，在运行`./Basic-Demo-64bit`的时候，可能会出现 Permission denied 错误。这时候运行`chmod +x Basic-Demo-64bit`应当可以解决此问题。
 
-如果你在wsl下运行`./Basic-Demo-64bit`的时候出现 Permission denied 错误，可以先运行`chmod a+rwx Basic-Demo-64bit`来修改权限。
-
+如果你在wsl下运行`./Basic-Demo-64bit`的时候出现 Permission denied 错误，可以先运行`chmod +x Basic-Demo-64bit`来修改权限。 】
 
 **评测脚本使用方法：**
 
