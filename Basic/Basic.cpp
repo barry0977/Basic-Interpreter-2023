@@ -73,6 +73,10 @@ void processLine(std::string line, Program &program, EvalState &state) {
             int pos = scanner.getPosition();
             std::string addline = trim(line.substr(abs(pos)));
             program.addSourceLine(n, addline);
+            if(program.hasLineNumber(n))
+            {
+                program.eraseParsedStatement(n);
+            }
             token=scanner.nextToken();
             if(token=="INPUT")
             {
@@ -132,6 +136,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
             }
             else if(token=="REM")
             {
+                //std::cout<<"进入REM！\n";
                 statement=new REM();
             }
             else if(token=="END")
@@ -180,17 +185,15 @@ void processLine(std::string line, Program &program, EvalState &state) {
     }
     else if(token == "LET")
     {
-        Expression* exp= readE(scanner);
-        statement=new LET(exp);
-        statement->execute(state,program);
-        delete statement;
+        Expression* exp= parseExp(scanner);
+        LET tmp(exp);
+        tmp.execute(state,program);
     }
     else if(token=="PRINT")
     {
-        Expression* exp=readE(scanner);
-        statement=new PRINT(exp);
-        statement->execute(state,program);
-        delete statement;
+        Expression* exp=parseExp(scanner);
+        PRINT tmp(exp);
+        tmp.execute(state,program);
     }
     else if(token=="RUN")
     {

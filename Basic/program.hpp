@@ -140,9 +140,11 @@ public:
 
     int getNextLineNumber(int lineNumber);
 
-    int gotoline=-2;
+    int gotoline=-2;//用于记录goto的行数
 
-    bool hasLineNumber(int lineNumber);
+    bool hasLineNumber(int lineNumber);//是否存在该行
+
+    void eraseParsedStatement(int lineNumber);//在替换该行的时候要先清理空间
 
 private:
     std::map<int,std::string>list;

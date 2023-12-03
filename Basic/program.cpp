@@ -93,6 +93,10 @@ bool Program::hasLineNumber(int lineNumber)
     }
 }
 
+void Program::eraseParsedStatement(int lineNumber)
+{
+    delete statelist[lineNumber];
+}
 
 //more func to add
 //todo
