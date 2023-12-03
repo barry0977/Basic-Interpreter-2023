@@ -140,13 +140,13 @@ public:
 
     int getNextLineNumber(int lineNumber);
 
-    //more func to add
-    //todo
+    int gotoline=-2;
+
+    bool hasLineNumber(int lineNumber);
 
 private:
-
-    // Fill this in with whatever types and instance variables you need
-    //todo
+    std::map<int,std::string>list;
+    std::map<int,Statement*>statelist;
 };
 
 #endif

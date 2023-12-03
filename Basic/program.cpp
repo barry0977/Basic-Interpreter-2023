@@ -17,46 +17,84 @@ Program::Program() = default;
 Program::~Program() = default;
 
 void Program::clear() {
-    // Replace this stub with your own code
-    //todo
+    list.clear();
+    for(auto it:statelist)
+    {
+        Statement* tmp=it.second;
+        tmp->~Statement();
+        delete tmp;
+    }
+    statelist.clear();
 }
 
 void Program::addSourceLine(int lineNumber, const std::string &line) {
-    // Replace this stub with your own code
-    //todo
+    list[lineNumber]=line;
 }
 
 void Program::removeSourceLine(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    list.erase(lineNumber);
 }
 
 std::string Program::getSourceLine(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    return list[lineNumber];
 }
 
 void Program::setParsedStatement(int lineNumber, Statement *stmt) {
-    // Replace this stub with your own code
-    //todo
+    statelist[lineNumber]=stmt;
 }
 
-//void Program::removeSourceLine(int lineNumber) {
 
 Statement *Program::getParsedStatement(int lineNumber) {
-   // Replace this stub with your own code
-   //todo
+   return statelist[lineNumber];
 }
 
 int Program::getFirstLineNumber() {
-    // Replace this stub with your own code
-    //todo
+    int number;
+    if(list.empty())
+    {
+        number=-1;
+    }
+    else
+    {
+        number = list.begin()->first;
+    }
+    return number;
 }
 
 int Program::getNextLineNumber(int lineNumber) {
-    // Replace this stub with your own code
-    //todo
+    if(gotoline!=-2)
+    {
+        int tmp=gotoline;
+        gotoline=-2;
+        return tmp;
+    }
+    else
+    {
+        int number;
+        if(list.upper_bound(lineNumber)!=list.end())
+        {
+            number = list.upper_bound(lineNumber)->first;
+        }
+        else
+        {
+            number=-1;
+        }
+        return number;
+    }
 }
+
+bool Program::hasLineNumber(int lineNumber)
+{
+    if(list.count(lineNumber)>0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 
 //more func to add
 //todo

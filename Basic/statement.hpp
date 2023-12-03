@@ -73,7 +73,92 @@ public:
 
 };
 
+class INPUT:public Statement
+{
+public:
+    INPUT(std::string name);
 
+    ~INPUT();
+
+    void execute(EvalState &state, Program &program);
+
+private:
+    std::string variable;
+};
+
+class REM:public Statement
+{
+public:
+    REM();
+
+    ~REM();
+
+    void execute(EvalState &state, Program &program);
+
+};
+
+class LET:public Statement
+{
+public:
+    LET(Expression* exp);
+
+    ~LET();
+
+    void execute(EvalState &state, Program &program);
+
+private:
+    Expression* expression;
+};
+
+class IF:public Statement
+{
+public:
+    IF(Expression* exp,int num);
+
+    ~IF();
+
+    void execute(EvalState &state, Program &program);
+
+private:
+    Expression* expression;
+    int linenumber;
+};
+
+class GOTO:public Statement
+{
+public:
+    GOTO(int num);
+
+    ~GOTO();
+
+    void execute(EvalState &state, Program &program);
+
+private:
+    int linenumber;
+};
+
+class PRINT:public Statement
+{
+public:
+    PRINT(Expression* exp);
+
+    ~PRINT();
+
+    void execute(EvalState &state, Program &program);
+
+private:
+    Expression* expression;
+};
+
+class END:public Statement
+{
+public:
+    END();
+
+    ~END();
+
+    void execute(EvalState &state, Program &program);
+};
 /*
  * The remainder of this file must consists of subclass
  * definitions for the individual statement forms.  Each of
