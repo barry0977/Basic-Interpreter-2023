@@ -18,15 +18,15 @@ Program::~Program() = default;
 
 void Program::clear() {
     list.clear();
-    for(auto it=statelist.begin();it!=statelist.end();it++)
+    for (auto it = statelist.begin(); it != statelist.end(); it++)
     {
         delete it->second;
     }
     statelist.clear();
 }
 
-void Program::addSourceLine(int lineNumber, const std::string &line) {
-    list[lineNumber]=line;
+void Program::addSourceLine(int lineNumber, const std::string& line) {
+    list[lineNumber] = line;
 }
 
 void Program::removeSourceLine(int lineNumber) {
@@ -37,20 +37,20 @@ std::string Program::getSourceLine(int lineNumber) {
     return list[lineNumber];
 }
 
-void Program::setParsedStatement(int lineNumber, Statement *stmt) {
-    statelist[lineNumber]=stmt;
+void Program::setParsedStatement(int lineNumber, Statement* stmt) {
+    statelist[lineNumber] = stmt;
 }
 
 
-Statement *Program::getParsedStatement(int lineNumber) {
-   return statelist[lineNumber];
+Statement* Program::getParsedStatement(int lineNumber) {
+    return statelist[lineNumber];
 }
 
 int Program::getFirstLineNumber() {
     int number;
-    if(list.empty())
+    if (list.empty())
     {
-        number=-1;
+        number = -1;
     }
     else
     {
@@ -60,22 +60,22 @@ int Program::getFirstLineNumber() {
 }
 
 int Program::getNextLineNumber(int lineNumber) {
-    if(gotoline!=-2)
+    if (gotoline != -2)
     {
-        int tmp=gotoline;
-        gotoline=-2;
+        int tmp = gotoline;
+        gotoline = -2;
         return tmp;
     }
     else
     {
         int number;
-        if(list.upper_bound(lineNumber)!=list.end())
+        if (list.upper_bound(lineNumber) != list.end())
         {
             number = list.upper_bound(lineNumber)->first;
         }
         else
         {
-            number=-1;
+            number = -1;
         }
         return number;
     }
@@ -83,7 +83,7 @@ int Program::getNextLineNumber(int lineNumber) {
 
 bool Program::hasLineNumber(int lineNumber)
 {
-    if(list.count(lineNumber)>0)
+    if (list.count(lineNumber) > 0)
     {
         return true;
     }
