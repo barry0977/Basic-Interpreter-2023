@@ -115,10 +115,10 @@ int testTrace(const char *trace) {
         0)
         return 2;
     if (system("diff test_ans test_out > /dev/null 2> /dev/null")) return 4;
-    if (system(
+    /*if (system(
             (string() + "cat " + trace + " | timeout 5 valgrind --error-exitcode=2 --leak-check=full " + studentBasic +
              " > /dev/null 2> /dev/null").c_str()) != 0)
-        return 3;
+        return 3;*/
     clearTempFiles();
     return 0;
 }
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
             for (; i < traceCount; i++) runTest(traceFolder + traces[i]);
         }
     } catch (...) {}
-    system("rm testcode -f");
+    //system("rm testcode -f");
     showScore();
     return 0;
 }

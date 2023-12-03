@@ -18,11 +18,9 @@ Program::~Program() = default;
 
 void Program::clear() {
     list.clear();
-    for(auto it:statelist)
+    for(auto it=statelist.begin();it!=statelist.end();it++)
     {
-        Statement* tmp=it.second;
-        tmp->~Statement();
-        delete tmp;
+        delete it->second;
     }
     statelist.clear();
 }

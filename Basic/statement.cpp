@@ -32,8 +32,8 @@ void INPUT::execute(EvalState &state, Program &program)
     {
         try
         {
-            std::cout<<"?\n";
-            std::cin>>value;
+            std::cout<<" ? ";
+            getline(std::cin,value);
             int intvalue= stringToInteger(value);
             state.setValue(variable,intvalue);
         }
@@ -85,14 +85,16 @@ void GOTO::execute(EvalState &state, Program &program)
     }
     else
     {
-        throw error;
+        program.gotoline=-1;
+        std::cout<<"LINE NUMBER ERROR\n";
     }
 }
 
-IF::IF(Expression* exp,int number)
+IF::IF(Expression* exp,int number,int op)
 {
     expression=exp;
     linenumber=number;
+    sign=op;
 }
 
 IF::~IF()
@@ -102,16 +104,47 @@ IF::~IF()
 
 void IF::execute(EvalState &state, Program &program)
 {
-    int value=expression->eval(state);
-    if(value==1)
+    //std::cout<<"进入IF！\n";
+    Expression *lhs,*rhs;
+    lhs=((CompoundExp *) expression)->getLHS();
+    rhs=((CompoundExp *) expression)->getRHS();
+    int lvalue=lhs->eval(state);
+    int rvalue=rhs->eval(state);
+    bool istrue=false;
+    if(sign==1)
+    {
+        if(lvalue>rvalue)
+        {
+            istrue=true;
+        }
+    }
+    else if(sign==-1)
+    {
+        if(lvalue<rvalue)
+        {
+            istrue=true;
+        }
+    }
+    else
+    {
+        if(lvalue==rvalue)
+        {
+            istrue=true;
+        }
+    }
+    //std::cout<<"到达if！\n";
+    if(istrue)
     {
         if(program.hasLineNumber(linenumber))
         {
+            //std::cout<<"到达第一层！\n";
             program.gotoline=linenumber;
         }
         else
         {
-            throw error;
+            //std::cout<<"到达第二层！\n";
+            program.gotoline=-1;
+            std::cout<<"LINE NUMBER ERROR\n";
         }
     }
 }
@@ -138,7 +171,7 @@ END::~END()=default;
 
 void END::execute(EvalState &state, Program &program)
 {
-    exit(0);
+    program.gotoline=-1;
 }
 
 

@@ -29,11 +29,15 @@ int main() {
     //cout << "Stub implementation of BASIC" << endl;
     while (true) {
         try {
+            //std::cout<<"进入该次循环\n";
             std::string input;
+            //std::cout<<"point 1\n";
             getline(std::cin, input);
+            //std::cout<<"point 2\n";
             if (input.empty())
                 return 0;
             processLine(input, program, state);
+            //std::cout<<"离开该次循环\n";
         } catch (ErrorException &ex) {
             std::cout << ex.getMessage() << std::endl;
         }
@@ -59,7 +63,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
     scanner.ignoreWhitespace();
     scanner.scanNumbers();
     scanner.setInput(line);
-    Statement *statement;
+    Statement *statement = nullptr;
     std::string token=scanner.nextToken();
     if(scanner.getTokenType(token)==NUMBER)
     {
@@ -67,7 +71,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
         if(scanner.hasMoreTokens()) //如果行数后还有别的，则添加该行,并且该行不会立即执行
         {
             int pos = scanner.getPosition();
-            std::string addline = trim(line.substr(pos));
+            std::string addline = trim(line.substr(abs(pos)));
             program.addSourceLine(n, addline);
             token=scanner.nextToken();
             if(token=="INPUT")
@@ -88,16 +92,37 @@ void processLine(std::string line, Program &program, EvalState &state) {
             }
             else if(token=="IF")
             {
-                int pos1=scanner.getPosition();
-                while(scanner.nextToken()!="THEN")
+                int op=0;
+                int pos1=abs(scanner.getPosition());
+                while(token!="THEN")
                 {
-                    scanner=scanner.nextToken();
+                    token=scanner.nextToken();
                 }
-                int pos2=scanner.getPosition();
-                std::string expr=trim(line.substr(pos1,pos2-pos1));
-                TokenScanner scanner1(expr);
-                Expression* exp= readE(scanner1);
-
+                int pos2=abs(scanner.getPosition());
+                std::string expr=trim(line.substr(pos1,pos2-pos1-5));
+                //std::cout<<"得到expr:"<<expr<<"\n";
+                for(int i=0;i<expr.size();i++)
+                {
+                    if(expr[i]=='<')
+                    {
+                        op=-1;
+                        expr[i]='=';
+                        break;
+                    }
+                    if(expr[i]=='>')
+                    {
+                        op=1;
+                        expr[i]='=';
+                    }
+                }
+                TokenScanner scanner1;
+                scanner1.ignoreWhitespace();
+                scanner1.scanNumbers();
+                scanner1.setInput(expr);
+                Expression* exp= parseExp(scanner1);
+                token=scanner.nextToken();
+                int number= stringToInteger(token);
+                statement =new IF(exp,number,op);
             }
             else if(token=="GOTO")
             {
@@ -107,15 +132,16 @@ void processLine(std::string line, Program &program, EvalState &state) {
             }
             else if(token=="REM")
             {
-                int position=scanner.getPosition();
-                std::string rem=line.substr(position);
-                statement=new REM;
+                statement=new REM();
             }
             else if(token=="END")
             {
+                //std::cout << "in IF!" << std::endl;
                 if(!scanner.hasMoreTokens())
                 {
-                    statement=new END;
+                    //std::cout << "new IN!" << std::endl;
+                    statement=new END();
+                    //std::cout << "new OK!" << std::endl;
                 }
                 else
                 {
@@ -129,12 +155,28 @@ void processLine(std::string line, Program &program, EvalState &state) {
             program.removeSourceLine(n);
         }
     }
-    if(token == "INPUT")
+    else if(token == "INPUT")
     {
-        token=scanner.nextToken();
-        statement=new INPUT(token);
-        statement->execute(state,program);
-        delete statement;
+        //std::cout<<"进入\n";
+        std::string name=scanner.nextToken();
+        std::string value;
+        while(true)
+        {
+            try
+            {
+                std::cout<<" ? ";
+                getline(std::cin,value);
+                int intvalue= stringToInteger(value);
+                state.setValue(name,intvalue);
+            }
+            catch(ErrorException& ex)
+            {
+                std::cout<<"INVALID NUMBER\n";
+                continue;
+            }
+            break;
+        }
+        //std::cout<<"退出\n";
     }
     else if(token == "LET")
     {
@@ -170,7 +212,6 @@ void processLine(std::string line, Program &program, EvalState &state) {
     else if(token=="HELP")
     {
     }
-
 }
 
 void run(Program &program, EvalState &state)
@@ -196,11 +237,11 @@ void list(Program &program, EvalState &state)
 
 void clear(Program &program, EvalState &state)
 {
-    std::cout<<"enter\n";
+    //std::cout<<"enter\n";
     program.clear();
-    std::cout<<"program clear over\n";
+    //std::cout<<"program clear over\n";
     state.Clear();
-    std::cout<<"state clear over\n";
+    //std::cout<<"state clear over\n";
 }
 
 

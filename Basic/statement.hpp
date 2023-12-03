@@ -113,7 +113,7 @@ private:
 class IF:public Statement
 {
 public:
-    IF(Expression* exp,int num);
+    IF(Expression* exp,int num,int op);
 
     ~IF();
 
@@ -122,6 +122,7 @@ public:
 private:
     Expression* expression;
     int linenumber;
+    int sign;
 };
 
 class GOTO:public Statement
