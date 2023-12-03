@@ -17,10 +17,10 @@
 
 /* Function prototypes */
 
-void processLine(std::string line, Program &program, EvalState &state);
-void run(Program &program, EvalState &state);
-void list(Program &program, EvalState &state);
-void clear(Program &program, EvalState &state);
+void processLine(std::string line, Program& program, EvalState& state);
+void run(Program& program, EvalState& state);
+void list(Program& program, EvalState& state);
+void clear(Program& program, EvalState& state);
 /* Main program */
 
 int main() {
@@ -38,7 +38,8 @@ int main() {
                 return 0;
             processLine(input, program, state);
             //std::cout<<"离开该次循环\n";
-        } catch (ErrorException &ex) {
+        }
+        catch (ErrorException& ex) {
             std::cout << ex.getMessage() << std::endl;
         }
     }
@@ -58,94 +59,94 @@ int main() {
  * or one of the BASIC commands, such as LIST or RUN.
  */
 
-void processLine(std::string line, Program &program, EvalState &state) {
+void processLine(std::string line, Program& program, EvalState& state) {
     TokenScanner scanner;
     scanner.ignoreWhitespace();
     scanner.scanNumbers();
     scanner.setInput(line);
-    Statement *statement = nullptr;
-    std::string token=scanner.nextToken();
-    if(scanner.getTokenType(token)==NUMBER)
+    Statement* statement = nullptr;
+    std::string token = scanner.nextToken();
+    if (scanner.getTokenType(token) == NUMBER)
     {
-        int n= stringToInteger(token);
-        if(scanner.hasMoreTokens()) //如果行数后还有别的，则添加该行,并且该行不会立即执行
+        int n = stringToInteger(token);
+        if (scanner.hasMoreTokens()) //如果行数后还有别的，则添加该行,并且该行不会立即执行
         {
             int pos = scanner.getPosition();
             std::string addline = trim(line.substr(abs(pos)));
             program.addSourceLine(n, addline);
-            if(program.hasLineNumber(n))
+            if (program.hasLineNumber(n))
             {
                 program.eraseParsedStatement(n);
             }
-            token=scanner.nextToken();
-            if(token=="INPUT")
+            token = scanner.nextToken();
+            if (token == "INPUT")
             {
-                token=scanner.nextToken();
-                statement=new INPUT(token);
+                token = scanner.nextToken();
+                statement = new INPUT(token);
             }
-            else if(token=="LET")
+            else if (token == "LET")
             {
                 //Expression* exp= readE(scanner);
-                Expression* exp= parseExp(scanner);
-                statement=new LET(exp);
+                Expression* exp = parseExp(scanner);
+                statement = new LET(exp);
             }
-            else if(token=="PRINT")
+            else if (token == "PRINT")
             {
-                Expression* exp= parseExp(scanner);
-                statement=new PRINT(exp);
+                Expression* exp = parseExp(scanner);
+                statement = new PRINT(exp);
             }
-            else if(token=="IF")
+            else if (token == "IF")
             {
-                int op=0;
-                int pos1=abs(scanner.getPosition());
-                while(token!="THEN")
+                int op = 0;
+                int pos1 = abs(scanner.getPosition());
+                while (token != "THEN")
                 {
-                    token=scanner.nextToken();
+                    token = scanner.nextToken();
                 }
-                int pos2=abs(scanner.getPosition());
-                std::string expr=trim(line.substr(pos1,pos2-pos1-5));
+                int pos2 = abs(scanner.getPosition());
+                std::string expr = trim(line.substr(pos1, pos2 - pos1 - 5));
                 //std::cout<<"得到expr:"<<expr<<"\n";
-                for(int i=0;i<expr.size();i++)
+                for (int i = 0; i < expr.size(); i++)
                 {
-                    if(expr[i]=='<')
+                    if (expr[i] == '<')
                     {
-                        op=-1;
-                        expr[i]='=';
+                        op = -1;
+                        expr[i] = '=';
                         break;
                     }
-                    if(expr[i]=='>')
+                    if (expr[i] == '>')
                     {
-                        op=1;
-                        expr[i]='=';
+                        op = 1;
+                        expr[i] = '=';
                     }
                 }
                 TokenScanner scanner1;
                 scanner1.ignoreWhitespace();
                 scanner1.scanNumbers();
                 scanner1.setInput(expr);
-                Expression* exp= parseExp(scanner1);
-                token=scanner.nextToken();
-                int number= stringToInteger(token);
-                statement =new IF(exp,number,op);
+                Expression* exp = parseExp(scanner1);
+                token = scanner.nextToken();
+                int number = stringToInteger(token);
+                statement = new IF(exp, number, op);
             }
-            else if(token=="GOTO")
+            else if (token == "GOTO")
             {
-                token=scanner.nextToken();
-                int number= stringToInteger(token);
-                statement=new GOTO(number);
+                token = scanner.nextToken();
+                int number = stringToInteger(token);
+                statement = new GOTO(number);
             }
-            else if(token=="REM")
+            else if (token == "REM")
             {
                 //std::cout<<"进入REM！\n";
-                statement=new REM();
+                statement = new REM();
             }
-            else if(token=="END")
+            else if (token == "END")
             {
                 //std::cout << "in IF!" << std::endl;
-                if(!scanner.hasMoreTokens())
+                if (!scanner.hasMoreTokens())
                 {
                     //std::cout << "new IN!" << std::endl;
-                    statement=new END();
+                    statement = new END();
                     //std::cout << "new OK!" << std::endl;
                 }
                 else
@@ -153,92 +154,92 @@ void processLine(std::string line, Program &program, EvalState &state) {
                     throw error;//格式错误
                 }
             }
-            program.setParsedStatement(n,statement);
+            program.setParsedStatement(n, statement);
         }
         else//如果只有行数，则删除这一行
         {
             program.removeSourceLine(n);
         }
     }
-    else if(token == "INPUT")
+    else if (token == "INPUT")
     {
         //std::cout<<"进入\n";
-        std::string name=scanner.nextToken();
+        std::string name = scanner.nextToken();
         std::string value;
-        while(true)
+        while (true)
         {
             try
             {
-                std::cout<<" ? ";
-                getline(std::cin,value);
-                int intvalue= stringToInteger(value);
-                state.setValue(name,intvalue);
+                std::cout << " ? ";
+                getline(std::cin, value);
+                int intvalue = stringToInteger(value);
+                state.setValue(name, intvalue);
             }
-            catch(ErrorException& ex)
+            catch (ErrorException& ex)
             {
-                std::cout<<"INVALID NUMBER\n";
+                std::cout << "INVALID NUMBER\n";
                 continue;
             }
             break;
         }
         //std::cout<<"退出\n";
     }
-    else if(token == "LET")
+    else if (token == "LET")
     {
-        Expression* exp= parseExp(scanner);
+        Expression* exp = parseExp(scanner);
         LET tmp(exp);
-        tmp.execute(state,program);
+        tmp.execute(state, program);
     }
-    else if(token=="PRINT")
+    else if (token == "PRINT")
     {
-        Expression* exp=parseExp(scanner);
+        Expression* exp = parseExp(scanner);
         PRINT tmp(exp);
-        tmp.execute(state,program);
+        tmp.execute(state, program);
     }
-    else if(token=="RUN")
+    else if (token == "RUN")
     {
-        run(program,state);
+        run(program, state);
     }
-    else if(token=="LIST")
+    else if (token == "LIST")
     {
-        list(program,state);
+        list(program, state);
     }
-    else if(token=="CLEAR")
+    else if (token == "CLEAR")
     {
-        clear(program,state);
+        clear(program, state);
     }
-    else if(token=="QUIT")
+    else if (token == "QUIT")
     {
-        clear(program,state);
+        clear(program, state);
         exit(0);
     }
-    else if(token=="HELP")
+    else if (token == "HELP")
     {
     }
 }
 
-void run(Program &program, EvalState &state)
+void run(Program& program, EvalState& state)
 {
-    int linenumber=program.getFirstLineNumber();
-    while(linenumber!=-1)
+    int linenumber = program.getFirstLineNumber();
+    while (linenumber != -1)
     {
-        Statement* statement=program.getParsedStatement(linenumber);
-        statement->execute(state,program);
-        linenumber=program.getNextLineNumber(linenumber);
+        Statement* statement = program.getParsedStatement(linenumber);
+        statement->execute(state, program);
+        linenumber = program.getNextLineNumber(linenumber);
     }
 }
 
-void list(Program &program, EvalState &state)
+void list(Program& program, EvalState& state)
 {
-    int linenumber=program.getFirstLineNumber();
-    while(linenumber!=-1)
+    int linenumber = program.getFirstLineNumber();
+    while (linenumber != -1)
     {
-        std::cout<<linenumber<<" "<<program.getSourceLine(linenumber)<<"\n";
-        linenumber=program.getNextLineNumber(linenumber);
+        std::cout << linenumber << " " << program.getSourceLine(linenumber) << "\n";
+        linenumber = program.getNextLineNumber(linenumber);
     }
 }
 
-void clear(Program &program, EvalState &state)
+void clear(Program& program, EvalState& state)
 {
     //std::cout<<"enter\n";
     program.clear();
