@@ -74,7 +74,7 @@ void processLine(std::string line, Program& program, EvalState& state) {
             int pos = scanner.getPosition();
             std::string addline = trim(line.substr(abs(pos)));
             program.addSourceLine(n, addline);
-            if (program.hasLineNumber(n))
+            if (program.hasLineNumber(n))//如果该行已经存在，应该先把该行清除
             {
                 program.eraseParsedStatement(n);
             }
